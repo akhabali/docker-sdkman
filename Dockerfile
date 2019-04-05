@@ -1,27 +1,21 @@
-FROM alpine:3.6
+FROM maven:3.6.0-jdk-8
 MAINTAINER Anas KHABALI <anas.khabali@gmail.com>
 
-RUN apk upgrade --update \
-    && apk add --no-cache --update openrc libstdc++ curl ca-certificates bash zip unzip openssl python \
-    && update-ca-certificates
+RUN apt-get update -y && apt-get upgrade -y
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# Install some tools for nodejs
+RUN apt-get install -y build-essential
 
 # Install docker
-RUN apk add docker && \
-    rc-update add docker boot
-
-# Install sdkman
-ENV SDKMAN_HOME=/root/.sdkman
-RUN curl -s "https://get.sdkman.io" | bash && \
-    rm -rf /var/lib/apt/lists/* && \
-    echo "sdkman_auto_answer=true" >> "$SDKMAN_HOME/etc/config" && \
-    echo "sdkman_auto_selfupdate=false" >> $SDKMAN_HOME/etc/config
-
-RUN bash -c ". $SDKMAN_HOME/bin/sdkman-init.sh && \
-            sdk install java 8.0.202-zulufx && \
-            sdk install maven 3.6.0"
-
-ENV PATH=$SDKMAN_HOME/candidates/java/current/bin/:${PATH}
-ENV PATH=$SDKMAN_HOME/candidates/maven/current/bin/:${PATH}
-ENV JAVA_HOME=$SDKMAN_HOME/candidates/java/current/
+RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+RUN apt-key fingerprint 0EBFCD88
+RUN add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \
+   stable"
+RUN apt-get update -y
+RUN apt-get install -y docker-ce docker-ce-cli containerd.io
 
 ENTRYPOINT sh
