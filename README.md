@@ -1,2 +1,2 @@
-# docker-sdkman
-A docker image with sdkman (Java 8 &amp; mvn 3.6.0 installed) and docker-ce for CI build
+# jenkins-java-build-container
+A docker image with Java 8, Maven 3.6.0, Docker
