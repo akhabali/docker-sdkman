@@ -5,7 +5,7 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 # Install some tools for nodejs
-RUN apt-get install -y build-essential
+RUN apt-get install -y build-essential rsync
 
 # Install docker
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
